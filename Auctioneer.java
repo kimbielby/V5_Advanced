@@ -18,33 +18,39 @@ public class Auctioneer{
 	int the_bid;
 	FileWriter bidFile; // Variable used for bid.txt file
 	PrintWriter printWriter; // Variable used for Print Writer
-	int current_bid;
+	int current_bid; // Current bid written in file
+	int roundTrips;
+	int maxNumBids;
 
 	public Auctioneer(){
 
 	}
 
-	public Auctioneer (int inPor, int outPor){
+	public Auctioneer (int inPor, int outPor, int maxT){
 	
 		rnd = new Random();
-		in_port = inPor;
-		out_port = outPor;
+		this.in_port = inPor;
+		this.out_port = outPor;
+		this.maxNumBids=maxT; // Maximum number of bids per node
+
 		the_bid = 15; // This is used to set the initial price
 
-		System.out.println("Auctioneer: " +in_port+ " of distributed lottery is active ....");
+		System.out.println("Auctioneer: " +in_port+ " of distributed auction is active ....");
 
 		createBidFile(); // Call to create and instantiate file
 
 		System.out.println("Auctioneer: " +in_port+ " -  STARTING AUCTION  with price = "+the_bid);
-
-		letsPause();
-		createNodeSockOut();
-		letsPause();
-		closeNodeSockOut();
-		createServerSock();
-		acceptServerSock();
-		letsPause();
-		closeServerSock();
+		while (roundTrips<maxNumBids){
+			letsPause();
+			createNodeSockOut();
+			letsPause();
+			closeNodeSockOut();
+			createServerSock();
+			acceptServerSock();
+			letsPause();
+			closeServerSock();
+			roundTrips++;
+		}
 	 }
 
 	 // Create bid.txt file
@@ -257,11 +263,11 @@ public class Auctioneer{
 	}
     
     public static void main (String[] args){
-		if (args.length != 2) {
+		if (args.length != 3) {
 	    	System.out.print("Usage: Auctioneer [port number] [forward port number]");
 	    	System.exit(1);
 		}
-    	Auctioneer a = new Auctioneer(Integer.parseInt(args[0]), Integer.parseInt(args[1]));
+    	Auctioneer a = new Auctioneer(Integer.parseInt(args[0]), Integer.parseInt(args[1]), Integer.parseInt(args[2]));
     }
 }
 

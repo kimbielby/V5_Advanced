@@ -28,14 +28,17 @@ public class Bidder{
 		// Creates new Auctioneer object
 		auctioneer = new Auctioneer();
 		createServerSock();
-		acceptServerSock();
-		letsPause();
-		bidding();
-		letsPause();
-		closeServerSock();
-		createNodeSockOut();
-		letsPause();
-		closeNodeSockOut();
+
+		while (true){
+			acceptServerSock();
+			letsPause();
+			bidding();
+			letsPause();
+			closeServerSock();
+			createNodeSockOut();
+			letsPause();
+			closeNodeSockOut();
+		}
     }
 
 	// Create server socket
@@ -45,13 +48,10 @@ public class Bidder{
 			in_ss = new ServerSocket(in_port);
 
 			// Print status
-			System.out.println("Auctioneer's socket (Local Host: "+localhost+", Port number: "+in_port+") is listening....");
+			System.out.println("Bidder: " +in_port+ " of distributed auction is active ....");
 		}
 		catch (IOException e){
-			System.out.println("Socket could not be opened: "+e);
-		}
-		catch (IllegalArgumentException e){
-			System.out.println("Incorrect port number: "+e);
+			System.out.println("Could not create Server Socket for Bidder "+in_port+": "+e);
 		}
 	}
 
@@ -62,7 +62,7 @@ public class Bidder{
 			in_soc = in_ss.accept();
 
 			// Confirm that token has been received
-			System.out.println("Auctioneer ("+in_port+ ") has received the token back");
+			System.out.println("Bidder: " + in_port + " has received the token.");
 		}
 		catch (IOException e){
 			System.out.println("Connection could not be made: "+e);
@@ -89,7 +89,7 @@ public class Bidder{
 			the_bid = auctioneer.getThe_bid();
 
 			// Print status
-			System.out.println("Node: "+in_port+" is reading the bid file");
+			System.out.println("Bidder: "+in_port+" is reading the bid file");
 		}
 		catch (Exception e){
 			System.out.println("Could not read file bid.txt: "+e);
@@ -105,10 +105,10 @@ public class Bidder{
 				auctioneer.setThe_bid(the_bid); // Make a bid
 
 				// Print confirmation of bid
-				System.out.println("Node "+in_port+":  my bid is "+the_bid);
+				System.out.println("Bidder: "+in_port+" -  my bid is "+the_bid);
 			}
 			else {
-				System.out.println("Node "+in_port+": no bid");
+				System.out.println("Bidder "+in_port+": no bid");
 			}
 		}
 		catch (IllegalArgumentException e){
@@ -118,12 +118,10 @@ public class Bidder{
 
 	// Close the server socket
 	private void closeServerSock(){
-		// Close the current socket
 		try {
-			in_ss.close();
+			in_soc.close();
 
-			// Confirm that Auctioneer has the token back
-			System.out.println("Auctioneer: " +in_port+ " :: received token back");
+			System.out.println("Socket is now closed");
 		}
 		catch (IOException e){
 			System.out.println("Cannot close Server Socket: "+e);
@@ -133,7 +131,6 @@ public class Bidder{
 
 	// Create the socket to the next node
 	private void createNodeSockOut(){
-		// Create a new socket to send the token to
 		try {
 			out_soc = new Socket(localhost, out_port);
 		}
@@ -156,7 +153,7 @@ public class Bidder{
 		try {
 			if (out_soc.isConnected()){
 				// Confirm that connection was accepted
-				System.out.println("Auctioneer: " +in_port+ " :: sent token to "+out_port);
+				System.out.println("Socket to Node "+out_port+" connected okay ");
 			}
 		}
 		catch (Exception e){
@@ -166,7 +163,6 @@ public class Bidder{
 
 	// Close new socket
 	private void closeNodeSockOut(){
-		// Close the new socket (pass the token)
 		try {
 			out_soc.close();
 		}
@@ -182,10 +178,9 @@ public class Bidder{
 
 	// Check closed successfully
 	private void sockCloseSuccess(){
-		// Check that the connection was successfully closed
 		try {
 			if (out_soc.isClosed()){
-				System.out.println("Socket to bidder "+out_port+" is now closed.");
+				System.out.println("Socket to Node "+out_port+" is now closed.");
 				System.out.println("Token has been passed successfully.");
 			}
 		}
@@ -195,7 +190,6 @@ public class Bidder{
 	}
 
     public static void main (String[] args){
-	// receive own port and next port in the ring at launch time
 	if (args.length != 2) {
 	    System.out.print("Usage: Bidder [port number] [forward port number]");
 	    System.exit(1);
