@@ -4,15 +4,13 @@ import java.util.*;
 
 public class Auctioneer{
 
-	// Used to determine if current node makes a bid
     private Random rnd;
-
     private ServerSocket in_ss;
     private Socket in_soc;
     private Socket out_soc;
 
     String	localhost = "127.0.0.1";
-    String hostName;
+
     int in_port;
     int out_port;
 	int the_bid;
@@ -94,8 +92,6 @@ public class Auctioneer{
 		catch (IllegalArgumentException e){
 			System.out.println("Incorrect Port number: "+e);
 		}
-
-		// Check success
 		sockConnectSuccess();
 	}
 
@@ -221,7 +217,7 @@ public class Auctioneer{
     
     public static void main (String[] args){
 		if (args.length != 3) {
-	    	System.out.print("Usage: Auctioneer [port number] [forward port number]");
+	    	System.out.print("Usage: Auctioneer [port number] [forward port number] [max bids allowed]");
 	    	System.exit(1);
 		}
     	Auctioneer a = new Auctioneer(Integer.parseInt(args[0]), Integer.parseInt(args[1]), Integer.parseInt(args[2]));

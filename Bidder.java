@@ -79,7 +79,6 @@ public class Bidder{
 
 	// Reading bid.txt and deciding to bid or not
 	private void bidding(){
-		// Call to Auctioneer to read current bid on file
 		try {
 			the_bid = auctioneer.getThe_bid();
 
@@ -96,7 +95,7 @@ public class Bidder{
 
 			if (randNum == 1){
 				the_bid += 10;
-				auctioneer.setThe_bid(the_bid); // Make a bid
+				auctioneer.setThe_bid(the_bid);
 
 				System.out.println("Bidder: "+in_port+" -  my bid is "+the_bid);
 			}
@@ -164,7 +163,7 @@ public class Bidder{
 		sockCloseSuccess();
 	}
 
-	// Check closed successfully
+	// Check socket closed successfully
 	private void sockCloseSuccess(){
 		try {
 			if (out_soc.isClosed()){
