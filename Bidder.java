@@ -10,7 +10,7 @@ public class Bidder{
     private Socket in_soc;
     private Socket out_soc;
 
-    String	localhost = "127.0.0.1";
+	String localhost = "127.0.0.1";
 
     int in_port;
     int out_port;
@@ -25,7 +25,6 @@ public class Bidder{
 		in_port = inPor;
 		out_port = outPor;
 
-		// Creates new Auctioneer object
 		auctioneer = new Auctioneer();
 		createServerSock();
 
@@ -43,11 +42,9 @@ public class Bidder{
 
 	// Create server socket
 	private void createServerSock(){
-		// Create the server socket with the current port
 		try {
 			in_ss = new ServerSocket(in_port);
 
-			// Print status
 			System.out.println("Bidder: " +in_port+ " of distributed auction is active ....");
 		}
 		catch (IOException e){
@@ -57,11 +54,9 @@ public class Bidder{
 
 	// Accept server socket
 	private void acceptServerSock(){
-		// Accept the server socket and the token
 		try {
 			in_soc = in_ss.accept();
 
-			// Confirm that token has been received
 			System.out.println("Bidder: " + in_port + " has received the token.");
 		}
 		catch (IOException e){
@@ -69,7 +64,7 @@ public class Bidder{
 		}
 	}
 
-	// Have a wee pause before the next bit
+	// Have a pause before the next bit
 	private void letsPause(){
 		try{
 			Thread.sleep(1000);
@@ -88,7 +83,6 @@ public class Bidder{
 		try {
 			the_bid = auctioneer.getThe_bid();
 
-			// Print status
 			System.out.println("Bidder: "+in_port+" is reading the bid file");
 		}
 		catch (Exception e){
@@ -104,7 +98,6 @@ public class Bidder{
 				the_bid += 10;
 				auctioneer.setThe_bid(the_bid); // Make a bid
 
-				// Print confirmation of bid
 				System.out.println("Bidder: "+in_port+" -  my bid is "+the_bid);
 			}
 			else {
@@ -143,8 +136,6 @@ public class Bidder{
 		catch (IllegalArgumentException e){
 			System.out.println("Incorrect Port number: "+e);
 		}
-
-		// Check success
 		sockConnectSuccess();
 	}
 
@@ -152,7 +143,7 @@ public class Bidder{
 	private void sockConnectSuccess(){
 		try {
 			if (out_soc.isConnected()){
-				// Confirm that connection was accepted
+
 				System.out.println("Socket to Node "+out_port+" connected okay ");
 			}
 		}
@@ -169,10 +160,7 @@ public class Bidder{
 		catch (IOException e){
 			System.out.println("Socket failed to close: "+e);
 		}
-		// call to pause
 		letsPause();
-
-		// Call to check success
 		sockCloseSuccess();
 	}
 
